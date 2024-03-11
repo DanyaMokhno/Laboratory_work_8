@@ -17,16 +17,18 @@ enum
 
 typedef struct Smartphone
 {
-    char *model; /* Модель */
-    char *brand; /* Марка */
-    int ram; /* Объем оперативной памяти, ГБ */
-    int memory; /* Объем постоянной памяти, ГБ */
-    float screen_size; /* Размер экрана, дюймы */
-    float weight; /* Вес, граммы */
-    float price; /* Цена, доллары */
+    char *model;            /* Модель */
+    char *brand;            /* Марка */
+    int ram;                /* Объем оперативной памяти, ГБ */
+    int memory;             /* Объем постоянной памяти, ГБ */
+    float screen_size;      /* Размер экрана, дюймы */
+    float weight;           /* Вес, граммы */
+    float price;            /* Цена, доллары */
     int *camera_resolution; /* Разрешение камеры (по камерам) */
-    int number_of_cameras;
+    int number_of_cameras;  /* кол-во камер */
 } Smartphone;
+
+
 
 typedef struct Position
 {
@@ -56,7 +58,7 @@ void add(Storage *storage, Position *new_position);
 void add_first(Storage *storage, Position *new_position);
 
 //вывод
-void print_table(Storage *storage);
+void print_table(Position* position);
 
 void print_header();
 
@@ -80,7 +82,7 @@ int main()
     /* ------------get filename--------------- */
     printf("Input filename: ");
     fgets(filename, MAX_FILENAME_LEN, stdin);
-    len = strlen(filename);
+    len = (int)strlen(filename);
     filename[len - 1] = '\0';
     /* -------------------------------------- */
 
@@ -164,7 +166,7 @@ void split_camera_resolution(Smartphone *smartphone, char *str)
     char *tmp_str;
     int len;
     int number;
-    len = strlen(str);
+    len = (int)strlen(str);
     for (i = 0, number = 1; i < len; i++) if (str[i] == '+') number++;
     tmp_str = malloc(4 * sizeof(char));
     smartphone->camera_resolution = malloc(sizeof(int) * number);
@@ -199,14 +201,6 @@ void add_first(Storage *storage, Position *new_position)
 
 void add(Storage *storage, Position *new_position)
 {
-    // вставка в конец
-//    if (storage && new_position)
-//    {
-//        storage->size += 1;
-//        storage->last_pos->next = new_position;
-//        new_position->index = storage->size;
-//        storage->last_pos = new_position;
-//    }
     // вставка в начало
     if (storage && new_position)
     {
@@ -223,7 +217,10 @@ void choose_to_delete(Storage *storage)
     do
     {
         if (storage->size > 0)
-            print_table(storage);
+        {
+            print_header();
+            print_table(storage->first_pos);
+        }
         printf("input the index of element you want delete or 0 to exit: ");
         scanf("%d", &val);
         if (val > 0)
@@ -232,15 +229,12 @@ void choose_to_delete(Storage *storage)
     } while (val != 0);
 }
 
-void print_table(Storage *storage)
+void print_table(Position* position)
 {
-    Position *cur;
-    cur = storage->first_pos;
-    print_header();
-    while (cur != NULL)
+    if(position != NULL)
     {
-        print(cur->smartphone, cur->index);
-        cur = cur->next;
+        print_table(position->next);
+        print(position->smartphone, position->index);
     }
 }
 
