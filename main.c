@@ -17,15 +17,15 @@ enum
 
 typedef struct Smartphone
 {
-    char *model;            /* Модель */
-    char *brand;            /* Марка */
-    int ram;                /* Объем оперативной памяти, ГБ */
-    int memory;             /* Объем постоянной памяти, ГБ */
+    char *model;             /* Модель */
+    char *brand;             /* Марка */
+    int ram;                 /* Объем оперативной памяти, ГБ */
+    int memory;              /* Объем постоянной памяти, ГБ */
     float screen_size;       /* Размер экрана, дюймы */
     float weight;            /* Вес, граммы */
     float price;             /* Цена, доллары */
-    int *camera_resolution; /* Разрешение камеры (по камерам) */
-    int number_of_cameras;  /* кол-во камер */
+    int *camera_resolution;  /* Разрешение камеры (по камерам) */
+    int number_of_cameras;   /* кол-во камер */
 } Smartphone;
 
 typedef struct Position
