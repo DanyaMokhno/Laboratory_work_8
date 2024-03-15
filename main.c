@@ -21,14 +21,12 @@ typedef struct Smartphone
     char *brand;            /* Марка */
     int ram;                /* Объем оперативной памяти, ГБ */
     int memory;             /* Объем постоянной памяти, ГБ */
-    float screen_size;      /* Размер экрана, дюймы */
-    float weight;           /* Вес, граммы */
-    float price;            /* Цена, доллары */
+    float screen_size;       /* Размер экрана, дюймы */
+    float weight;            /* Вес, граммы */
+    float price;             /* Цена, доллары */
     int *camera_resolution; /* Разрешение камеры (по камерам) */
     int number_of_cameras;  /* кол-во камер */
 } Smartphone;
-
-
 
 typedef struct Position
 {
@@ -55,10 +53,8 @@ void split_camera_resolution(Smartphone *smartphone, char *str);
 
 void add(Storage *storage, Position *new_position);
 
-void add_first(Storage *storage, Position *new_position);
-
 //вывод
-void print_table(Position* position);
+void print_table(Position *position);
 
 void print_header();
 
@@ -82,7 +78,7 @@ int main()
     /* ------------get filename--------------- */
     printf("Input filename: ");
     fgets(filename, MAX_FILENAME_LEN, stdin);
-    len = (int)strlen(filename);
+    len = (int) strlen(filename);
     filename[len - 1] = '\0';
     /* -------------------------------------- */
 
@@ -124,8 +120,7 @@ void fill_storage(Storage *storage, char *filename)
             for (i = 1; fgets(tmp_str, MAX_STR_IN_FILE_LEN, source); i++)
             {
                 new_pos = create_position(tmp_str, i);
-                if (i == 1) add_first(storage, new_pos);
-                else add(storage, new_pos);
+                add(storage, new_pos);
             }
             fclose(source);
         }
@@ -166,7 +161,7 @@ void split_camera_resolution(Smartphone *smartphone, char *str)
     char *tmp_str;
     int len;
     int number;
-    len = (int)strlen(str);
+    len = (int) strlen(str);
     for (i = 0, number = 1; i < len; i++) if (str[i] == '+') number++;
     tmp_str = malloc(4 * sizeof(char));
     smartphone->camera_resolution = malloc(sizeof(int) * number);
@@ -190,22 +185,12 @@ void split_camera_resolution(Smartphone *smartphone, char *str)
     free(tmp_str);
 }
 
-void add_first(Storage *storage, Position *new_position)
-{
-    if (storage && new_position)
-    {
-        storage->first_pos = new_position;
-        storage->size++;
-    }
-}
-
 void add(Storage *storage, Position *new_position)
 {
     // вставка в начало
     if (storage && new_position)
     {
         storage->size++;
-        new_position->index = storage->size;
         new_position->next = storage->first_pos;
         storage->first_pos = new_position;
     }
@@ -229,19 +214,19 @@ void choose_to_delete(Storage *storage)
     } while (val != 0);
 }
 
-void print_table(Position* position)
-{
-    if(position != NULL)
-    {
-        print_table(position->next);
-        print(position->smartphone, position->index);
-    }
-}
-
 void print_header()
 {
     printf("| %-5s | %-20s | %-15s | %-5s | %-5s | %-6s | %-7s | %-8s | %-17s |\n",
            "№", "Model", "Brand", "RAM", "Storage", "Screen", "Weight", "Price", "Camera Resolution");
+}
+
+void print_table(Position *position)
+{
+    if (position != NULL)
+    {
+        print_table(position->next);
+        print(position->smartphone, position->index);
+    }
 }
 
 void print(Smartphone *smartphone, int index)
@@ -302,19 +287,6 @@ void delete_selected(Storage *storage, int index)
     }
 }
 
-void delete_storage(Storage *storage)
-{
-    Position *tmp, *tmp_next;
-    tmp = storage->first_pos;
-    while (tmp != NULL)
-    {
-        tmp_next = tmp->next;
-        delete_position(tmp);
-        tmp = tmp_next;
-    }
-    free(storage);
-}
-
 void delete_position(Position *position)
 {
     free(position->smartphone->model);
@@ -324,3 +296,18 @@ void delete_position(Position *position)
     position->next = NULL;
     free(position);
 }
+
+void delete_storage(Storage *storage)
+{
+    Position *cur, *next;
+    cur = storage->first_pos;
+    while (cur != NULL)
+    {
+        next = cur->next;
+        delete_position(cur);
+        cur = next;
+    }
+    free(storage);
+}
+
+
